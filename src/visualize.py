@@ -132,12 +132,11 @@ def plot_optimizer_performance(X_train, y_train, X_val, y_val, optimizers, learn
 
     # Plot training loss for all optimizers
     plt.figure(figsize=(12, 6))
-    for optimizer_name, (train_losses, _, _, _) in optimizer_results.items():
-        plt.plot(train_losses, label=optimizer_name)
+    for optimizer_name, value in optimizer_results.items():
+        plt.plot(value['train_losses'], label=optimizer_name)
     plt.title('Training Loss for Different Optimizers')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
-    plt.yscale('log')  # Use logarithmic scale
     plt.legend()
     plt.grid(True)
     plt.savefig('results/plots/compare_optimizers/optimizer_train_loss.png')
@@ -145,12 +144,11 @@ def plot_optimizer_performance(X_train, y_train, X_val, y_val, optimizers, learn
 
     # Plot validation loss for all optimizers
     plt.figure(figsize=(12, 6))
-    for optimizer_name, (_, val_losses, _, _) in optimizer_results.items():
-        plt.plot(val_losses, label=optimizer_name)
+    for optimizer_name, value in optimizer_results.items():
+        plt.plot(value['val_losses'], label=optimizer_name)
     plt.title('Validation Loss for Different Optimizers')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
-    plt.yscale('log')  # Use logarithmic scale
     plt.legend()
     plt.grid(True)
     plt.savefig('results/plots/compare_optimizers/optimizer_val_loss.png')
@@ -158,8 +156,8 @@ def plot_optimizer_performance(X_train, y_train, X_val, y_val, optimizers, learn
 
     # Plot training F1 score for all optimizers
     plt.figure(figsize=(12, 6))
-    for optimizer_name, (_, _, train_f1_scores, _) in optimizer_results.items():
-        plt.plot(train_f1_scores, label=optimizer_name)
+    for optimizer_name, value in optimizer_results.items():
+        plt.plot(value['train_f1_scores'], label=optimizer_name)
     plt.title('Training F1 Score for Different Optimizers')
     plt.xlabel('Epoch')
     plt.ylabel('F1 Score')
@@ -170,8 +168,8 @@ def plot_optimizer_performance(X_train, y_train, X_val, y_val, optimizers, learn
 
     # Plot validation F1 score for all optimizers
     plt.figure(figsize=(12, 6))
-    for optimizer_name, (_, _, _, val_f1_scores) in optimizer_results.items():
-        plt.plot(val_f1_scores, label=optimizer_name)
+    for optimizer_name, value in optimizer_results.items():
+        plt.plot(value['val_f1_scores'], label=optimizer_name)
     plt.title('Validation F1 Score for Different Optimizers')
     plt.xlabel('Epoch')
     plt.ylabel('F1 Score')
@@ -230,42 +228,45 @@ def visualize_minibatch_optimizer(X_train, y_train, X_val, y_val, optimizer_clas
     plt.ylabel('Loss')
     plt.legend()
     plt.grid(True)
-    plt.savefig('results/plots/optimizers/minibatch_optimizer_train_loss.png')
+    plt.savefig('results/plots/optimizers/minibatch_optimizer/train_loss.png')
     plt.show()
 
     # Plot validation loss for different batch sizes and learning rates
     plt.figure(figsize=(12, 6))
-    for (batch_size, lr), losses in val_loss_results.items():
+    for key, losses in val_loss_results.items():
+        batch_size, lr = key.split('_')
         plt.plot(losses, label=f'Batch Size={batch_size}, LR={lr}')
     plt.title('Minibatch Optimizer: Validation Loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
     plt.legend()
     plt.grid(True)
-    plt.savefig('results/plots/optimizers/minibatch_optimizer_val_loss.png')
+    plt.savefig('results/plots/optimizers/minibatch_optimizer/val_loss.png')
     plt.show()
 
     # Plot training F1 score for different batch sizes and learning rates
     plt.figure(figsize=(12, 6))
-    for (batch_size, lr), f1_scores in train_f1_results.items():
+    for key, f1_scores in train_f1_results.items():
+        batch_size, lr = key.split('_')
         plt.plot(f1_scores, label=f'Batch Size={batch_size}, LR={lr}')
     plt.title('Minibatch Optimizer: Training F1 Score')
     plt.xlabel('Epoch')
     plt.ylabel('F1 Score')
     plt.legend()
     plt.grid(True)
-    plt.savefig('results/plots/optimizers/minibatch_optimizer_train_f1.png')
+    plt.savefig('results/plots/optimizers/minibatch_optimizer/train_f1.png')
     plt.show()
 
     # Plot validation F1 score for different batch sizes and learning rates
     plt.figure(figsize=(12, 6))
-    for (batch_size, lr), f1_scores in val_f1_results.items():
+    for key, f1_scores in val_f1_results.items():
+        batch_size, lr = key.split('_')
         plt.plot(f1_scores, label=f'Batch Size={batch_size}, LR={lr}')
     plt.title('Minibatch Optimizer: Validation F1 Score')
     plt.xlabel('Epoch')
     plt.ylabel('F1 Score')
     plt.legend()
     plt.grid(True)
-    plt.savefig('results/plots/optimizers/minibatch_optimizer_val_f1.png')
+    plt.savefig('results/plots/optimizers/minibatch_optimizer/val_f1.png')
     plt.show()
 

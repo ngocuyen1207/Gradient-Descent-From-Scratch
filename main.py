@@ -8,6 +8,7 @@ from src.data_loader import load_and_preprocess_data
 from src.visualize import optimizers_with_lrs_plots, plot_optimizer_performance, visualize_minibatch_optimizer
 import sys
 sys.path.append('.')
+sys.path.append('/home/uyen/smoke_detection_training/')
 
 file_path = 'data/stackoverflow_full.csv'
 target_column = 'Employed'  # Replace with the actual target column name
