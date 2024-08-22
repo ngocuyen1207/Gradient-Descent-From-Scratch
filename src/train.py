@@ -40,6 +40,9 @@ def train_model_with_early_stopping(model, optimizer, X_train, y_train, X_val, y
         train_f1_scores.append(train_f1)
         val_f1_scores.append(val_f1)
 
+        epoch_time = time.time() - start_time
+        epoch_times.append(epoch_time)
+
         # Early stopping logic
         if val_f1 > best_f1:
             best_f1 = val_f1
@@ -51,13 +54,20 @@ def train_model_with_early_stopping(model, optimizer, X_train, y_train, X_val, y
             print(f"Early stopping at epoch {epoch+1}")
             break
 
-        epoch_time = time.time() - start_time
-        epoch_times.append(epoch_time)
 
     train_losses = interpolate_missing_data([arr.get() for arr in train_losses]).tolist()
     val_losses = interpolate_missing_data([arr.get() for arr in val_losses]).tolist()
     train_f1_scores = interpolate_missing_data(train_f1_scores).tolist()
     val_f1_scores = interpolate_missing_data(val_f1_scores).tolist()
+
+    assert len(train_losses) == len(val_losses) == len(train_f1_scores) == len(val_f1_scores) == len(epoch_times), "Lengths of the lists are not equal"
+
+    if len(train_losses) != len(val_losses) or len(train_f1_scores) != len(val_f1_scores) or len(epoch_times) != len(train_losses):
+        print(f"Length of train_losses: {len(train_losses)}")
+        print(f"Length of val_losses: {len(val_losses)}")
+        print(f"Length of train_f1_scores: {len(train_f1_scores)}")
+        print(f"Length of val_f1_scores: {len(val_f1_scores)}")
+        print(f"Length of epoch_times: {len(epoch_times)}")
 
     return train_losses, val_losses, train_f1_scores, val_f1_scores, epoch_times
 
