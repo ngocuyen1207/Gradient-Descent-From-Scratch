@@ -141,7 +141,6 @@ def plot_optimizer_performance(X_train, y_train, X_val, y_val, optimizers, num_e
     plt.legend()
     plt.grid(True)
     plt.savefig('results/plots/compare_optimizers/optimizer_train_loss.png')
-    plt.show()
 
     # Plot validation loss for all optimizers
     plt.figure(figsize=(12, 6))
@@ -153,7 +152,6 @@ def plot_optimizer_performance(X_train, y_train, X_val, y_val, optimizers, num_e
     plt.legend()
     plt.grid(True)
     plt.savefig('results/plots/compare_optimizers/optimizer_val_loss.png')
-    plt.show()
 
     # Plot training F1 score for all optimizers
     plt.figure(figsize=(12, 6))
@@ -165,7 +163,6 @@ def plot_optimizer_performance(X_train, y_train, X_val, y_val, optimizers, num_e
     plt.legend()
     plt.grid(True)
     plt.savefig('results/plots/compare_optimizers/optimizer_train_f1.png')
-    plt.show()
 
     # Plot validation F1 score for all optimizers
     plt.figure(figsize=(12, 6))
@@ -177,7 +174,6 @@ def plot_optimizer_performance(X_train, y_train, X_val, y_val, optimizers, num_e
     plt.legend()
     plt.grid(True)
     plt.savefig('results/plots/compare_optimizers/optimizer_val_f1.png')
-    plt.show()
 
 def visualize_minibatch_optimizer(X_train, y_train, X_val, y_val, optimizer_class, batch_sizes, learning_rates):
     input_size = X_train.shape[1]
@@ -230,7 +226,6 @@ def visualize_minibatch_optimizer(X_train, y_train, X_val, y_val, optimizer_clas
     plt.legend()
     plt.grid(True)
     plt.savefig('results/plots/optimizers/minibatch_optimizer/train_loss.png')
-    plt.show()
 
     # Plot validation loss for different batch sizes and learning rates
     plt.figure(figsize=(12, 6))
@@ -243,7 +238,6 @@ def visualize_minibatch_optimizer(X_train, y_train, X_val, y_val, optimizer_clas
     plt.legend()
     plt.grid(True)
     plt.savefig('results/plots/optimizers/minibatch_optimizer/val_loss.png')
-    plt.show()
 
     # Plot training F1 score for different batch sizes and learning rates
     plt.figure(figsize=(12, 6))
@@ -256,7 +250,6 @@ def visualize_minibatch_optimizer(X_train, y_train, X_val, y_val, optimizer_clas
     plt.legend()
     plt.grid(True)
     plt.savefig('results/plots/optimizers/minibatch_optimizer/train_f1.png')
-    plt.show()
 
     # Plot validation F1 score for different batch sizes and learning rates
     plt.figure(figsize=(12, 6))
@@ -269,7 +262,6 @@ def visualize_minibatch_optimizer(X_train, y_train, X_val, y_val, optimizer_clas
     plt.legend()
     plt.grid(True)
     plt.savefig('results/plots/optimizers/minibatch_optimizer/val_f1.png')
-    plt.show()
 
 def compare_time(result_path):
     with open(result_path, 'r') as f:
@@ -298,31 +290,31 @@ def compare_time(result_path):
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.show()
+    plt.savefig('results/plots/compare_optimizers/optimizer_val_loss_time.png')
 
     # Plotting Train F1 Score
     plt.figure(figsize=(12, 6))
     for optimizer, results in optimizers.items():
-        plt.plot(results['epoch_times'][1:], results['train_f1_scores'], label=optimizer)
+        plt.plot(results['epoch_times'], results['train_f1_scores'], label=optimizer)
     plt.title('Training F1 Score vs. Time')
     plt.xlabel('Time (s)')
     plt.ylabel('F1 Score')
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.show()
+    plt.savefig('results/plots/compare_optimizers/optimizer_train_f1_time.png')
 
     # Plotting Validation F1 Score
     plt.figure(figsize=(12, 6))
     for optimizer, results in optimizers.items():
-        plt.plot(results['epoch_times'][1:], results['val_f1_scores'], label=optimizer)
+        plt.plot(results['epoch_times'], results['val_f1_scores'], label=optimizer)
     plt.title('Validation F1 Score vs. Time')
     plt.xlabel('Time (s)')
     plt.ylabel('F1 Score')
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.show()
+    plt.savefig('results/plots/compare_optimizers/optimizer_val_f1_time.png')
 
 def final_test(X_train, y_train, X_test, y_test, optimizers, num_epochs=100, patience=5):
     """
