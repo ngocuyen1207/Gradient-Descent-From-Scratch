@@ -112,8 +112,10 @@ def plot_optimizer_performance(X_train, y_train, X_val, y_val, optimizers, num_e
         num_epochs (int): The number of epochs to train for.
         patience (int): The number of epochs to wait for improvement before early stopping.
     """
-    optimizer_results = {}
-
+    # Load optimizer_results from JSON
+    with open('results/plots/compare_optimizers/optimizer_results.json', 'r') as f:
+        optimizer_results = json.load(f)
+        
     for optimizer_name, optimizer_class in tqdm(optimizers, desc='Comparing optimizers'):
         optimizer_results[optimizer_name] = {}
         model = LinearModel(X_train.shape[1])  # Initialize model
@@ -129,12 +131,13 @@ def plot_optimizer_performance(X_train, y_train, X_val, y_val, optimizers, num_e
         optimizer_results[optimizer_name]['val_f1_scores'] = val_f1_scores
         optimizer_results[optimizer_name]['epoch_times'] = epoch_time
         
-    # Save results to JSON
-    results = {
-        'optimizer_results': optimizer_results,
-    }
+
     with open(f'results/plots/compare_optimizers/optimizer_results.json', 'w') as f:
-        json.dump(results, f)
+        json.dump(optimizer_results, f)
+
+    # Load optimizer_results from JSON
+    with open('results/plots/compare_optimizers/optimizer_results.json', 'r') as f:
+        optimizer_results = json.load(f)
 
     # Plot training loss for all optimizers
     plt.figure(figsize=(12, 6))
@@ -270,10 +273,7 @@ def visualize_minibatch_optimizer(X_train, y_train, X_val, y_val, optimizer_clas
 
 def compare_time(result_path):
     with open(result_path, 'r') as f:
-        data = json.load(f)
-
-    # Extracting the relevant data
-    optimizers = data['optimizer_results']
+        optimizers = json.load(f)
 
     # Plotting Train Loss
     plt.figure(figsize=(12, 6))
@@ -368,7 +368,6 @@ def evaluate_with_regularization(X_train, y_train, X_val, y_val, optimizers, num
         with open('results/plots/regularization/optimizer_results_l1.json', 'w') as f:
             json.dump(optimizer_results_l1, f)
 
-
     for optimizer_name, optimizer_class in optimizers:
         optimizer_results_l2[optimizer_name] = {
             'train_losses': {},
@@ -408,7 +407,8 @@ def evaluate_with_regularization(X_train, y_train, X_val, y_val, optimizers, num
             plt.plot(train_losses, label=lambda_key)
         # Plot L2 results
         for lambda_key, train_losses in results_l2['train_losses'].items():
-            plt.plot(train_losses, label=lambda_key, linestyle='--')
+            if lambda_key != 'L2=0.0':
+                plt.plot(train_losses, label=lambda_key, linestyle='--')
         plt.title(f'Training Loss for {optimizer_name} - L1 and L2')
         plt.xlabel('Epoch')
         plt.ylabel('Loss')

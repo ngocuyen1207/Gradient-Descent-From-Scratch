@@ -20,16 +20,16 @@ X_train, y_train, X_val, y_val, X_test, y_test = load_and_preprocess_data(file_p
 
 # Different learning rates for each optimizer
 optimizers = [
-    ("GradientDescent", GradientDescentOptimizer),
-    ("Mini-Batch Optimizer", MiniBatchOptimizer),
+    # ("GradientDescent", GradientDescentOptimizer),
+    # ("Mini-Batch Optimizer", MiniBatchOptimizer),
     # ("Momentum", MomentumOptimizer),
     # ("RMSprop", RMSpropOptimizer),
     # ("Adam", AdamOptimizer),
     # ("AdaGrad", AdaGradOptimizer),
     # ("AdamW", AdamWOptimizer),
     # ("Nadam", NadamOptimizer),
-    ("Adadelta", AdadeltaOptimizer),
-    # ("Nesterov", NesterovOptimizer),
+    # ("Adadelta", AdadeltaOptimizer),
+    ("Nesterov", NesterovOptimizer),
 ]
 optimizer_hyperparam = {
     "GradientDescent": {"learning_rate": 0.1, "l1_lambda": 0, "l2_lambda": 0},

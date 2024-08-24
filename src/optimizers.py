@@ -22,7 +22,7 @@ class GradientDescentOptimizer:
 
 
 class MiniBatchOptimizer:
-    def __init__(self, learning_rate=0.01, batch_size=1, l1_lambda=0, l2_lambda=0, **kwargs):
+    def __init__(self, learning_rate=0.1, batch_size=64, l1_lambda=0, l2_lambda=0, **kwargs):
         self.learning_rate = learning_rate
         self.batch_size = batch_size
         self.l1_lambda = l1_lambda
