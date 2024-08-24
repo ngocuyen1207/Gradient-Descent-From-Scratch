@@ -316,91 +316,6 @@ def compare_time(result_path):
     plt.tight_layout()
     plt.savefig('results/plots/compare_optimizers/optimizer_val_f1_time.png')
 
-def final_test(X_train, y_train, X_test, y_test, optimizers, num_epochs=100, patience=5):
-    """
-    Trains models with different optimizers and plots their performance on training loss, validation loss, training F1, and validation F1.
-
-    Args:
-        X_train: Training data features.
-        y_train: Training data labels.
-        X_val: Validation data features.
-        y_val: Validation data labels.
-        optimizers (list): A list of tuples containing optimizer names and classes.
-        learning_rate (float): The learning rate to use for all optimizers.
-        num_epochs (int): The number of epochs to train for.
-        patience (int): The number of epochs to wait for improvement before early stopping.
-    """
-    optimizer_results = {}
-
-    for optimizer_name, optimizer_class in tqdm(optimizers, desc='Final test'):
-        optimizer_results[optimizer_name] = {}
-        model = LinearModel(X_train.shape[1])  # Initialize model
-        optimizer = optimizer_class()
-        
-        train_losses, test_losses, train_f1_scores, test_f1_scores, epoch_time = train_model_with_early_stopping(
-            model, optimizer, X_train, y_train, X_test, y_test, num_epochs=num_epochs, patience=patience
-        )
-        
-        optimizer_results[optimizer_name]['train_losses'] = train_losses
-        optimizer_results[optimizer_name]['test_losses'] = test_losses
-        optimizer_results[optimizer_name]['train_f1_scores'] = train_f1_scores
-        optimizer_results[optimizer_name]['test_f1_scores'] = test_f1_scores
-        optimizer_results[optimizer_name]['epoch_times'] = epoch_time
-        
-    # Save results to JSON
-    results = {
-        'optimizer_results': optimizer_results,
-    }
-    with open(f'results/plots/final_test/optimizer_results.json', 'w') as f:
-        json.dump(results, f)
-
-    # Plot training loss for all optimizers
-    plt.figure(figsize=(12, 6))
-    for optimizer_name, value in optimizer_results.items():
-        plt.plot(value['train_losses'], value['epoch_times'], label=optimizer_name)
-    plt.title('Training Loss for Different Optimizers')
-    plt.xlabel('Epoch')
-    plt.ylabel('Time (s)')
-    plt.legend()
-    plt.grid(True)
-    plt.savefig('results/plots/final_test/optimizer_train_loss.png')
-    plt.show()
-
-    # Plot validation loss for all optimizers
-    plt.figure(figsize=(12, 6))
-    for optimizer_name, value in optimizer_results.items():
-        plt.plot(value['val_losses'], value['epoch_times'], label=optimizer_name)
-    plt.title('Test Loss for Different Optimizers')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Loss')
-    plt.legend()
-    plt.grid(True)
-    plt.savefig('results/plots/final_test/optimizer_val_loss.png')
-    plt.show()
-
-    # Plot training F1 score for all optimizers
-    plt.figure(figsize=(12, 6))
-    for optimizer_name, value in optimizer_results.items():
-        plt.plot(value['train_f1_scores'], value['epoch_times'], label=optimizer_name)
-    plt.title('Training F1 Score for Different Optimizers')
-    plt.xlabel('Time (s)')
-    plt.ylabel('F1 Score')
-    plt.legend()
-    plt.grid(True)
-    plt.savefig('results/plots/final_test/optimizer_train_f1.png')
-    plt.show()
-
-    # Plot validation F1 score for all optimizers
-    plt.figure(figsize=(12, 6))
-    for optimizer_name, value in optimizer_results.items():
-        plt.plot(value['val_f1_scores'], value['epoch_times'], label=optimizer_name)
-    plt.title('Test F1 Score for Different Optimizers')
-    plt.xlabel('Time (s)')
-    plt.ylabel('F1 Score')
-    plt.legend()
-    plt.grid(True)
-    plt.savefig('results/plots/final_test/optimizer_val_f1.png')
-    plt.show()
 
 def evaluate_with_regularization(X_train, y_train, X_val, y_val, optimizers, num_epochs=100, patience=5, l1_lambdas=[0.0], l2_lambdas=[0.0]):
     """
@@ -545,3 +460,92 @@ def evaluate_with_regularization(X_train, y_train, X_val, y_val, optimizers, num
         plt.savefig(f'results/plots/regularization/l1_l2_{optimizer_name}_val_f1.png')
         plt.show()
 
+import os
+import json
+import matplotlib.pyplot as plt
+from tqdm import tqdm
+
+def final_test(X_train, y_train, X_test, y_test, optimizers, num_epochs=100, patience=5, optimizer_hyperparam=None):
+    """
+    Trains models with different optimizers and plots their performance on training loss, validation loss, training F1, and validation F1.
+
+    Args:
+        X_train: Training data features.
+        y_train: Training data labels.
+        X_test: Test data features.
+        y_test: Test data labels.
+        optimizers (list): A list of tuples containing optimizer names and classes.
+        num_epochs (int): The number of epochs to train for.
+        patience (int): The number of epochs to wait for improvement before early stopping.
+        optimizer_hyperparam (dict): A dictionary containing hyperparameters for each optimizer.
+    """
+    
+    # Ensure results directory exists
+    os.makedirs('results/plots/final_test/', exist_ok=True)
+    
+    optimizer_results = {}
+
+    for optimizer_name, optimizer_class in tqdm(optimizers, desc='Final test'):
+        optimizer_results[optimizer_name] = {}
+        model = LinearModel(X_train.shape[1], optimizer_hyperparam[optimizer_name])  # Initialize model
+        
+        # Initialize optimizer with specific hyperparameters
+        optimizer = optimizer_class(**optimizer_hyperparam.get(optimizer_name, {}))
+        
+        train_losses, test_losses, train_f1_scores, test_f1_scores, epoch_time = train_model_with_early_stopping(
+            model, optimizer, X_train, y_train, X_test, y_test, num_epochs=num_epochs, patience=patience
+        )
+        
+        optimizer_results[optimizer_name]['train_losses'] = train_losses
+        optimizer_results[optimizer_name]['test_losses'] = test_losses
+        optimizer_results[optimizer_name]['train_f1_scores'] = train_f1_scores
+        optimizer_results[optimizer_name]['test_f1_scores'] = test_f1_scores
+        optimizer_results[optimizer_name]['epoch_times'] = epoch_time
+        
+    # Save results to JSON
+    with open('results/plots/final_test/optimizer_results.json', 'w') as f:
+        json.dump(optimizer_results, f)
+
+    # Plot training loss for all optimizers
+    plt.figure(figsize=(12, 6))
+    for optimizer_name, value in optimizer_results.items():
+        plt.plot(value['train_losses'], label=optimizer_name)
+    plt.title('Training Loss for Different Optimizers')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.grid(True)
+    plt.savefig('results/plots/final_test/optimizer_train_loss.png')
+
+    # Plot test loss for all optimizers
+    plt.figure(figsize=(12, 6))
+    for optimizer_name, value in optimizer_results.items():
+        plt.plot(value['test_losses'], label=optimizer_name)
+    plt.title('Test Loss for Different Optimizers')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.grid(True)
+    plt.savefig('results/plots/final_test/optimizer_test_loss.png')
+
+    # Plot training F1 score for all optimizers
+    plt.figure(figsize=(12, 6))
+    for optimizer_name, value in optimizer_results.items():
+        plt.plot(value['train_f1_scores'], label=optimizer_name)
+    plt.title('Training F1 Score for Different Optimizers')
+    plt.xlabel('Epoch')
+    plt.ylabel('F1 Score')
+    plt.legend()
+    plt.grid(True)
+    plt.savefig('results/plots/final_test/optimizer_train_f1.png')
+
+    # Plot test F1 score for all optimizers
+    plt.figure(figsize=(12, 6))
+    for optimizer_name, value in optimizer_results.items():
+        plt.plot(value['test_f1_scores'], label=optimizer_name)
+    plt.title('Test F1 Score for Different Optimizers')
+    plt.xlabel('Epoch')
+    plt.ylabel('F1 Score')
+    plt.legend()
+    plt.grid(True)
+    plt.savefig('results/plots/final_test/optimizer_test_f1.png')

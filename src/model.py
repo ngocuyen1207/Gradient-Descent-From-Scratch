@@ -3,7 +3,7 @@ import pickle
 
 
 class LinearModel:
-    def __init__(self, input_size, l1_lambda=0.0, l2_lambda=0.0):
+    def __init__(self, input_size, l1_lambda=0.0, l2_lambda=0.0, **kwargs):
         self.weights = cp.random.randn(input_size)
         self.bias = cp.random.randn()
         self.l1_lambda = l1_lambda
