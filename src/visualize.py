@@ -481,31 +481,33 @@ def final_test(X_train, y_train, X_test, y_test, optimizers, num_epochs=100, pat
     """
     
     # Ensure results directory exists
-    # os.makedirs('results/plots/final_test/', exist_ok=True)
+    os.makedirs('results/plots/final_test/', exist_ok=True)
     
-    # optimizer_results = {}
+    # Load results from JSON
+    with open('results/plots/final_test/optimizer_results.json', 'r') as f:
+        optimizer_results = json.load(f)
 
-    # for optimizer_name, optimizer_class in tqdm(optimizers, desc='Final test'):
-    #     optimizer_results[optimizer_name] = {}
-    #     model = LinearModel(X_train.shape[1], **optimizer_hyperparam[optimizer_name])  # Initialize model
+    for optimizer_name, optimizer_class in tqdm(optimizers, desc='Final test'):
+        optimizer_results[optimizer_name] = {}
+        model = LinearModel(X_train.shape[1], **optimizer_hyperparam[optimizer_name])  # Initialize model
         
-    #     # Initialize optimizer with specific hyperparameters
-    #     optimizer = optimizer_class(**optimizer_hyperparam.get(optimizer_name, {}))
+        # Initialize optimizer with specific hyperparameters
+        optimizer = optimizer_class(**optimizer_hyperparam.get(optimizer_name, {}))
         
-    #     train_losses, test_losses, train_f1_scores, test_f1_scores, epoch_time, test_predictions = train_model_with_early_stopping(
-    #         model, optimizer, X_train, y_train, X_test, y_test, num_epochs=num_epochs, patience=patience, return_predictions=True
-    #     )
+        train_losses, test_losses, train_f1_scores, test_f1_scores, epoch_time, test_predictions = train_model_with_early_stopping(
+            model, optimizer, X_train, y_train, X_test, y_test, num_epochs=num_epochs, patience=patience, return_predictions=True
+        )
         
-    #     optimizer_results[optimizer_name]['train_losses'] = train_losses
-    #     optimizer_results[optimizer_name]['test_losses'] = test_losses
-    #     optimizer_results[optimizer_name]['train_f1_scores'] = train_f1_scores
-    #     optimizer_results[optimizer_name]['test_f1_scores'] = test_f1_scores
-    #     optimizer_results[optimizer_name]['epoch_times'] = epoch_time
-    #     optimizer_results[optimizer_name]['test_predictions'] = test_predictions
+        optimizer_results[optimizer_name]['train_losses'] = train_losses
+        optimizer_results[optimizer_name]['test_losses'] = test_losses
+        optimizer_results[optimizer_name]['train_f1_scores'] = train_f1_scores
+        optimizer_results[optimizer_name]['test_f1_scores'] = test_f1_scores
+        optimizer_results[optimizer_name]['epoch_times'] = epoch_time
+        optimizer_results[optimizer_name]['test_predictions'] = test_predictions
         
-    # # Save results to JSON
-    # with open('results/plots/final_test/optimizer_results.json', 'w') as f:
-    #     json.dump(optimizer_results, f)
+    # Save results to JSON
+    with open('results/plots/final_test/optimizer_results.json', 'w') as f:
+        json.dump(optimizer_results, f)
 
     # Load results from JSON
     with open('results/plots/final_test/optimizer_results.json', 'r') as f:
