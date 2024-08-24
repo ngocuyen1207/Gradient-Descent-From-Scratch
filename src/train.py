@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import f1_score
 import time
 
-def train_model_with_early_stopping(model, optimizer, X_train, y_train, X_val, y_val, num_epochs=10000, patience=100):
+def train_model_with_early_stopping(model, optimizer, X_train, y_train, X_val, y_val, num_epochs=10000, patience=100, return_predictions=False):
     best_f1 = 0.0
     train_losses = []
     val_losses = []
@@ -69,6 +69,8 @@ def train_model_with_early_stopping(model, optimizer, X_train, y_train, X_val, y
         print(f"Length of val_f1_scores: {len(val_f1_scores)}")
         print(f"Length of epoch_times: {len(epoch_times)}")
 
+    if return_predictions:
+        return train_losses, val_losses, train_f1_scores, val_f1_scores, epoch_times, val_predictions_binary.get().tolist()
     return train_losses, val_losses, train_f1_scores, val_f1_scores, epoch_times
 
 def interpolate_missing_data(data):

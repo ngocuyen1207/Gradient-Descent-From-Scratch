@@ -3,7 +3,7 @@ import cupy as cp
 import cupy as cp
 
 class GradientDescentOptimizer:
-    def __init__(self, learning_rate=0.1, l1_lambda=0.01, l2_lambda=0.01, **kwargs):
+    def __init__(self, learning_rate=0.1, l1_lambda=0, l2_lambda=0, **kwargs):
         self.learning_rate = learning_rate
         self.l1_lambda = l1_lambda
         self.l2_lambda = l2_lambda
@@ -22,7 +22,7 @@ class GradientDescentOptimizer:
 
 
 class MiniBatchOptimizer:
-    def __init__(self, learning_rate=0.01, batch_size=1, l1_lambda=0.01, l2_lambda=0.01, **kwargs):
+    def __init__(self, learning_rate=0.01, batch_size=1, l1_lambda=0, l2_lambda=0, **kwargs):
         self.learning_rate = learning_rate
         self.batch_size = batch_size
         self.l1_lambda = l1_lambda
@@ -53,7 +53,7 @@ class MiniBatchOptimizer:
 
 
 class MomentumOptimizer:
-    def __init__(self, learning_rate=0.1, momentum=0.9, l1_lambda=0.01, l2_lambda=0.01, **kwargs):
+    def __init__(self, learning_rate=0.1, momentum=0.9, l1_lambda=0, l2_lambda=0, **kwargs):
         self.learning_rate = learning_rate
         self.momentum = momentum
         self.velocity_w = 0
@@ -79,7 +79,7 @@ class MomentumOptimizer:
 
 
 class RMSpropOptimizer:
-    def __init__(self, learning_rate=0.1, beta=0.9, epsilon=1e-8, l1_lambda=0.01, l2_lambda=0.01, **kwargs):
+    def __init__(self, learning_rate=0.1, beta=0.9, epsilon=1e-8, l1_lambda=0, l2_lambda=0, **kwargs):
         self.learning_rate = learning_rate
         self.beta = beta
         self.epsilon = epsilon
@@ -106,7 +106,7 @@ class RMSpropOptimizer:
 
 
 class AdamOptimizer:
-    def __init__(self, learning_rate=0.1, beta1=0.9, beta2=0.999, epsilon=1e-8, l1_lambda=0.01, l2_lambda=0.01, **kwargs):
+    def __init__(self, learning_rate=0.1, beta1=0.9, beta2=0.999, epsilon=1e-8, l1_lambda=0, l2_lambda=0, **kwargs):
         self.learning_rate = learning_rate
         self.beta1 = beta1
         self.beta2 = beta2
@@ -147,7 +147,7 @@ class AdamOptimizer:
         model.bias -= self.learning_rate * m_b_hat / (cp.sqrt(v_b_hat) + self.epsilon)
 
 class AdaGradOptimizer:
-    def __init__(self, learning_rate=0.1, epsilon=1e-8, l1_lambda=0.01, l2_lambda=0.01, **kwargs):
+    def __init__(self, learning_rate=0.1, epsilon=1e-8, l1_lambda=0, l2_lambda=0, **kwargs):
         self.learning_rate = learning_rate
         self.epsilon = epsilon
         self.l1_lambda = l1_lambda
@@ -170,7 +170,7 @@ class AdaGradOptimizer:
 
 
 class AdamWOptimizer:
-    def __init__(self, learning_rate=0.1, beta1=0.9, beta2=0.999, epsilon=1e-8, weight_decay=0.01, l1_lambda=0.01, l2_lambda=0.01, **kwargs):
+    def __init__(self, learning_rate=0.1, beta1=0.9, beta2=0.999, epsilon=1e-8, weight_decay=0.01, l1_lambda=0, l2_lambda=0, **kwargs):
         self.learning_rate = learning_rate
         self.beta1 = beta1
         self.beta2 = beta2
@@ -213,7 +213,7 @@ class AdamWOptimizer:
 
 
 class AdadeltaOptimizer:
-    def __init__(self, learning_rate=0.1, rho=0.95, epsilon=1e-8, l1_lambda=0.01, l2_lambda=0.01, **kwargs):
+    def __init__(self, learning_rate=0.1, rho=0.95, epsilon=1e-8, l1_lambda=0, l2_lambda=0, **kwargs):
         self.learning_rate = learning_rate
         self.rho = rho
         self.epsilon = epsilon
@@ -244,7 +244,7 @@ class AdadeltaOptimizer:
 
 
 class NesterovOptimizer:
-    def __init__(self, learning_rate=0.1, momentum=0.9, l1_lambda=0.01, l2_lambda=0.01, **kwargs):
+    def __init__(self, learning_rate=0.1, momentum=0.9, l1_lambda=0, l2_lambda=0, **kwargs):
         self.learning_rate = learning_rate
         self.momentum = momentum
         self.velocity_w = 0
@@ -270,7 +270,7 @@ class NesterovOptimizer:
 
 
 class NadamOptimizer:
-    def __init__(self, learning_rate=0.1, beta1=0.9, beta2=0.999, epsilon=1e-8, l1_lambda=0.01, l2_lambda=0.01, **kwargs):
+    def __init__(self, learning_rate=0.1, beta1=0.9, beta2=0.999, epsilon=1e-8, l1_lambda=0, l2_lambda=0, **kwargs):
         self.learning_rate = learning_rate
         self.beta1 = beta1
         self.beta2 = beta2

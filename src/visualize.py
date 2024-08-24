@@ -5,8 +5,13 @@ from src.train import train_model_with_early_stopping
 import sys
 import json
 from tqdm import tqdm
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import f1_score
+from sklearn.linear_model import LinearRegression, LogisticRegression
+import os
+import json
+import matplotlib.pyplot as plt
+from tqdm import tqdm
+import pandas as pd
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 sys.path.append('.')
 
 # Experiment with different optimizers and learning rates
@@ -345,7 +350,7 @@ def evaluate_with_regularization(X_train, y_train, X_val, y_val, optimizers, num
         
         for l1_lambda in tqdm(l1_lambdas, desc=f'{optimizer_name} regularization:'):
             lambda_key = f"L1={l1_lambda}"
-            model = LinearModel(X_train.shape[1], l1_lambda=l1_lambda)  # Initialize model with L1 regularization
+            model = LinearModel(X_train.shape[1], l1_lambda=l1_lambda, l2_lambda=0)  # Initialize model with L1 regularization
             optimizer = optimizer_class()
             
             train_losses, val_losses, train_f1_scores, val_f1_scores, epoch_time = train_model_with_early_stopping(
@@ -375,7 +380,7 @@ def evaluate_with_regularization(X_train, y_train, X_val, y_val, optimizers, num
         
         for l2_lambda in tqdm(l2_lambdas, desc=f'{optimizer_name} regularization:'):
             lambda_key = f"L2={l2_lambda}"
-            model = LinearModel(X_train.shape[1], l2_lambda=l2_lambda)  # Initialize model with L1 regularization
+            model = LinearModel(X_train.shape[1], l2_lambda=l2_lambda, l1_lambda=0)  # Initialize model with L1 regularization
             optimizer = optimizer_class()
             
             train_losses, val_losses, train_f1_scores, val_f1_scores, epoch_time = train_model_with_early_stopping(
@@ -410,7 +415,7 @@ def evaluate_with_regularization(X_train, y_train, X_val, y_val, optimizers, num
         plt.legend()
         plt.grid(True)
         plt.savefig(f'results/plots/regularization/l1_l2_{optimizer_name}_train_loss.png')
-        plt.show()
+        
 
         # Plot validation loss for all optimizers and lambda combinations
         plt.figure(figsize=(12, 6))
@@ -426,7 +431,7 @@ def evaluate_with_regularization(X_train, y_train, X_val, y_val, optimizers, num
         plt.legend()
         plt.grid(True)
         plt.savefig(f'results/plots/regularization/l1_l2_{optimizer_name}_val_loss.png')
-        plt.show()
+        
 
         # Plot training F1 score for all optimizers and lambda combinations
         plt.figure(figsize=(12, 6))
@@ -442,7 +447,7 @@ def evaluate_with_regularization(X_train, y_train, X_val, y_val, optimizers, num
         plt.legend()
         plt.grid(True)
         plt.savefig(f'results/plots/regularization/l1_l2_{optimizer_name}_train_f1.png')
-        plt.show()
+        
 
         # Plot validation F1 score for all optimizers and lambda combinations
         plt.figure(figsize=(12, 6))
@@ -458,12 +463,7 @@ def evaluate_with_regularization(X_train, y_train, X_val, y_val, optimizers, num
         plt.legend()
         plt.grid(True)
         plt.savefig(f'results/plots/regularization/l1_l2_{optimizer_name}_val_f1.png')
-        plt.show()
-
-import os
-import json
-import matplotlib.pyplot as plt
-from tqdm import tqdm
+        
 
 def final_test(X_train, y_train, X_test, y_test, optimizers, num_epochs=100, patience=5, optimizer_hyperparam=None):
     """
@@ -481,30 +481,35 @@ def final_test(X_train, y_train, X_test, y_test, optimizers, num_epochs=100, pat
     """
     
     # Ensure results directory exists
-    os.makedirs('results/plots/final_test/', exist_ok=True)
+    # os.makedirs('results/plots/final_test/', exist_ok=True)
     
-    optimizer_results = {}
+    # optimizer_results = {}
 
-    for optimizer_name, optimizer_class in tqdm(optimizers, desc='Final test'):
-        optimizer_results[optimizer_name] = {}
-        model = LinearModel(X_train.shape[1], optimizer_hyperparam[optimizer_name])  # Initialize model
+    # for optimizer_name, optimizer_class in tqdm(optimizers, desc='Final test'):
+    #     optimizer_results[optimizer_name] = {}
+    #     model = LinearModel(X_train.shape[1], **optimizer_hyperparam[optimizer_name])  # Initialize model
         
-        # Initialize optimizer with specific hyperparameters
-        optimizer = optimizer_class(**optimizer_hyperparam.get(optimizer_name, {}))
+    #     # Initialize optimizer with specific hyperparameters
+    #     optimizer = optimizer_class(**optimizer_hyperparam.get(optimizer_name, {}))
         
-        train_losses, test_losses, train_f1_scores, test_f1_scores, epoch_time = train_model_with_early_stopping(
-            model, optimizer, X_train, y_train, X_test, y_test, num_epochs=num_epochs, patience=patience
-        )
+    #     train_losses, test_losses, train_f1_scores, test_f1_scores, epoch_time, test_predictions = train_model_with_early_stopping(
+    #         model, optimizer, X_train, y_train, X_test, y_test, num_epochs=num_epochs, patience=patience, return_predictions=True
+    #     )
         
-        optimizer_results[optimizer_name]['train_losses'] = train_losses
-        optimizer_results[optimizer_name]['test_losses'] = test_losses
-        optimizer_results[optimizer_name]['train_f1_scores'] = train_f1_scores
-        optimizer_results[optimizer_name]['test_f1_scores'] = test_f1_scores
-        optimizer_results[optimizer_name]['epoch_times'] = epoch_time
+    #     optimizer_results[optimizer_name]['train_losses'] = train_losses
+    #     optimizer_results[optimizer_name]['test_losses'] = test_losses
+    #     optimizer_results[optimizer_name]['train_f1_scores'] = train_f1_scores
+    #     optimizer_results[optimizer_name]['test_f1_scores'] = test_f1_scores
+    #     optimizer_results[optimizer_name]['epoch_times'] = epoch_time
+    #     optimizer_results[optimizer_name]['test_predictions'] = test_predictions
         
-    # Save results to JSON
-    with open('results/plots/final_test/optimizer_results.json', 'w') as f:
-        json.dump(optimizer_results, f)
+    # # Save results to JSON
+    # with open('results/plots/final_test/optimizer_results.json', 'w') as f:
+    #     json.dump(optimizer_results, f)
+
+    # Load results from JSON
+    with open('results/plots/final_test/optimizer_results.json', 'r') as f:
+        optimizer_results = json.load(f)
 
     # Plot training loss for all optimizers
     plt.figure(figsize=(12, 6))
@@ -549,3 +554,30 @@ def final_test(X_train, y_train, X_test, y_test, optimizers, num_epochs=100, pat
     plt.legend()
     plt.grid(True)
     plt.savefig('results/plots/final_test/optimizer_test_f1.png')
+
+    # Create a dataframe of accuracy, precision, recall, and f1 scores
+    results_df = pd.DataFrame(columns=['Optimizer', 'Accuracy', 'Precision', 'Recall', 'F1 Score'])
+    X_train, y_train, X_test, y_test = X_train.get(), y_train.get(), X_test.get(), y_test.get() 
+    for optimizer_name, value in optimizer_results.items():
+        accuracy = accuracy_score(y_test, value['test_predictions'])
+        precision = precision_score(y_test, value['test_predictions'])
+        recall = recall_score(y_test, value['test_predictions'])
+        f1 = f1_score(y_test, value['test_predictions'])
+        results_df = pd.concat([results_df, pd.DataFrame({'Optimizer': [optimizer_name], 'Accuracy': [accuracy], 'Precision': [precision], 'Recall': [recall], 'F1 Score': [f1]})], ignore_index=True)
+    
+    
+    # Train model using sklearn
+    model_sklearn = LinearRegression()
+    model_sklearn.fit(X_train, y_train)
+    test_predictions_sklearn = (model_sklearn.predict(X_test) > 0.5).astype(int)
+
+    # Calculate evaluation metrics
+    accuracy_sklearn = accuracy_score(y_test, test_predictions_sklearn)
+    precision_sklearn = precision_score(y_test, test_predictions_sklearn)
+    recall_sklearn = recall_score(y_test, test_predictions_sklearn)
+    f1_score_sklearn = f1_score(y_test, test_predictions_sklearn)
+
+    # Append results to dataframe
+    results_df = pd.concat([results_df, pd.DataFrame({'Optimizer': ['sklearn'], 'Accuracy': [accuracy_sklearn], 'Precision': [precision_sklearn], 'Recall': [recall_sklearn], 'F1 Score': [f1_score_sklearn]})], ignore_index=True)
+    # Save dataframe to CSV
+    results_df.to_csv('results/plots/final_test/optimizer_results.csv', index=False)
