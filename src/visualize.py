@@ -17,15 +17,20 @@ sys.path.append('.')
 # Experiment with different optimizers and learning rates
 def optimizers_with_lrs_plots(X_train, y_train, X_val, y_val, optimizers, learning_rates):
     input_size = X_train.shape[1]
-    num_epochs = 10000
+    num_epochs = 100000
     patience = 100
 
-    for optimizer_name, optimizer_class in tqdm(optimizers, desc=f'Visualizing optimizers'):
-        train_loss_results = {}
-        val_loss_results = {}
-        train_f1_results = {}
-        val_f1_results = {}
-        epoch_times = {}
+    for optimizer_name, optimizer_class in tqdm(optimizers, desc=f'Visualizing learning rates'):
+        # Load results from JSON
+        print(f'Running {optimizer_name}')
+        with open(f'results/plots/optimizers/{optimizer_name}_results.json', 'r') as f:
+            results = json.load(f)
+        
+        train_loss_results = results['train_loss']
+        val_loss_results = results['val_loss']
+        train_f1_results = results['train_f1']
+        val_f1_results = results['val_f1']
+        epoch_times = results['epoch_times']
 
         for lr in learning_rates:
             model = LinearModel(input_size)
@@ -187,12 +192,14 @@ def visualize_minibatch_optimizer(X_train, y_train, X_val, y_val, optimizer_clas
     input_size = X_train.shape[1]
     num_epochs = 10000
     patience = 100
+    with open(f'results/plots/optimizers/minibatch_optimizer/results.json', 'r') as f:
+        results = json.load(f)
 
-    train_loss_results = {}
-    val_loss_results = {}
-    train_f1_results = {}
-    val_f1_results = {}
-    epoch_times = {}
+    train_loss_results = results['train_loss']
+    val_loss_results = results['val_loss']
+    train_f1_results = results['train_f1']
+    val_f1_results = results['val_f1']
+    epoch_times = results['epoch_times']
 
     for batch_size in tqdm(batch_sizes, desc='Visualizing minibatch optimizer'):
         for lr in learning_rates:
@@ -365,7 +372,7 @@ def evaluate_with_regularization(X_train, y_train, X_val, y_val, optimizers, num
             optimizer_results_l1[optimizer_name]['epoch_times'][lambda_key] = epoch_time
 
         # Save results to JSON
-        with open('results/plots/regularization/optimizer_results_l1.json', 'w') as f:
+        with open(f'results/plots/regularization/optimizer_results_l1_{optimizer_name}.json', 'w') as f:
             json.dump(optimizer_results_l1, f)
 
     for optimizer_name, optimizer_class in optimizers:
@@ -394,7 +401,7 @@ def evaluate_with_regularization(X_train, y_train, X_val, y_val, optimizers, num
             optimizer_results_l2[optimizer_name]['epoch_times'][lambda_key] = epoch_time
 
         # Save results to JSON
-        with open('results/plots/regularization/optimizer_results_l2.json', 'w') as f:
+        with open(f'results/plots/regularization/optimizer_results_l2_{optimizer_name}.json', 'w') as f:
             json.dump(optimizer_results_l2, f)
 
     # Plot training loss for all optimizers and lambda combinations
