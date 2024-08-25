@@ -22,7 +22,7 @@ def optimizers_with_lrs_plots(X_train, y_train, X_val, y_val, optimizers, learni
 
     for optimizer_name, optimizer_class in tqdm(optimizers, desc=f'Visualizing learning rates'):
         # Load results from JSON
-        print(f'Running {optimizer_name}')
+        print(f'Running {optimizer_name} with learning rates {learning_rates}')
         with open(f'results/plots/optimizers/{optimizer_name}_results.json', 'r') as f:
             results = json.load(f)
         
